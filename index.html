@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Variação de Sinal de Função Polinomial</title>
+  </head>
+  <body>
+    <h2>Variação de Sinal de Função Polinomial</h2>
+    <p>
+      Insira os coeficientes da função polinomial de até 10 graus abaixo, separados por vírgulas:
+    </p>
+    <input type="text" id="coefficients" placeholder="Exemplo: 3x^3 + 2x^2 - 2">
+    <button onclick="calculate()">Calcular</button>
+    <hr>
+    <h3>Resultados</h3>
+    <p id="result"></p>
+    <p id="variation"></p>
+    <script>
+
+      let polinomial = '';
+      let result = '';
+      let signalChanges = [];
+
+      function calculate() {
+        polinomial = document.getElementById('coefficients').value;
+        if (polinomial) {
+          const terms = polinomial.split('+');
+          let sum = 0;
+          let lastValue = 0;
+          let lastSignal = null;
+          for (let x = -1000; x <= 1000; x++) {
+            let termSum = 0;
+            for (let i = 0; i < terms.length; i++) {
+              const term = terms[i].trim();
+              if (term.indexOf('x') > -1) {
+                const parts = term.split('x');
+                const coefficient = parseFloat(parts[0]);
+                const exponent = parseFloat(parts[1].replace('^', ''));
+                termSum += coefficient * Math.pow(x, exponent);
+              } else {
+                termSum += parseFloat(term);
+              }
+            }
+            sum += termSum;
+            if (lastSignal && ((lastValue < 0 && sum > 0) || (lastValue > 0 && sum < 0))) {
+              signalChanges.push(x);
+            }
+            lastValue = sum;
+            lastSignal = sum > 0 ? 'positive' : 'negative';
+          }
+          result = `Resultado: ${sum}`;
+          const resultElement = document.getElementById('result');
+          resultElement.textContent = result;
+          const variationElement = document.getElementById('variation');
+          variationElement.textContent = `Alterações de sinal: ${signalChanges.join(', ')}`;
+        }
+      }
+
+    </script>
+  </body>
+</html>
